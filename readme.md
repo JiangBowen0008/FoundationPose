@@ -1,3 +1,82 @@
+# Updated FoundationPose Installation Guide
+
+The original conda installation guide in the README may not work for everyone. Here's an improved installation procedure that addresses common issues:
+
+Reference:
+1. https://github.com/NVlabs/FoundationPose/issues/85#issuecomment-2208255129
+2. https://github.com/NVlabs/FoundationPose/issues/254#issue-2639862132
+
+## Environment Setup with Conda (Improved Method)
+
+```bash
+# Create conda environment
+conda create --name foundationpose python=3.9
+
+# Modify bundlesdf/mycuda/setup.py by adding your eigen path to include_dirs (This step has already been done in this forked repo)
+# Add your specific conda path to the include_dirs list:
+# setup(
+#     include_dirs=[
+#         "/usr/local/include/eigen3",
+#         "/usr/include/eigen3",
+#         # Add your Conda Eigen path (update with your actual path)
+#         "/home/username/anaconda3/envs/foundationpose/include/eigen3",
+#     ],
+# )
+
+# Activate conda environment
+conda activate foundationpose
+
+# Install required compilers and tools
+conda install -y -c conda-forge gcc=11 gxx=11
+conda install -y -c anaconda git
+conda install -y -c "nvidia/label/cuda-11.8.0" cuda-toolkit
+
+# Install Eigen3 3.4.0 under conda environment
+conda install conda-forge::eigen=3.4.0
+
+# Set the Eigen path (update with your actual path)
+export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:$CONDA_PREFIX/include/eigen3"
+
+# Install dependencies
+python -m pip install -r requirements.txt
+
+# Install NVDiffRast
+python -m pip install --quiet --no-cache-dir git+https://github.com/NVlabs/nvdiffrast.git
+
+# Kaolin (Optional, needed if running model-free setup)
+python -m pip install --quiet --no-cache-dir kaolin==0.15.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.0.0_cu118.html
+
+# PyTorch3D
+python -m pip install --quiet --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt200/download.html
+
+# Update library path
+export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
+
+# Build extensions
+CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.9/site-packages/pybind11/share/cmake/pybind11 bash build_all_conda.sh
+```
+
+## Troubleshooting
+
+If you encounter issues with missing `mycpp.so` after building, you can manually build it:
+
+```bash
+cd mycpp/build
+CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.9/site-packages/pybind11/share/cmake/pybind11 cmake ..
+make -j$(nproc)
+# Rename the .so file built to mycpp.so if necessary
+```
+
+## Running a Demo
+
+After installation, you can try running the demo:
+
+```bash
+python run_demo.py
+```
+
+This updated installation method has been verified to work when the original conda method in the README was failing.
+
 # FoundationPose: Unified 6D Pose Estimation and Tracking of Novel Objects
 [[Paper]](https://arxiv.org/abs/2312.08344) [[Website]](https://nvlabs.github.io/FoundationPose/)
 
