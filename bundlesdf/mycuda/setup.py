@@ -33,8 +33,9 @@ setup(
         ],extra_compile_args={'gcc': c_flags, 'nvcc': nvcc_flags}),
     ],
     include_dirs=[
-        "/usr/local/include/eigen3",
-        "/usr/include/eigen3",
+        # "/usr/local/include/eigen3",
+        # "/usr/include/eigen3",
+        "/home/bowenj/anaconda3/envs/foundationpose/include/eigen3",
     ],
     cmdclass={
         'build_ext': BuildExtension
