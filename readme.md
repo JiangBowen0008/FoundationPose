@@ -78,6 +78,12 @@ make -j$(nproc)
 
 ## Running a Demo
 
+Downloading the required pretrained models and demo_data following the original instructions
+
+[weights](https://drive.google.com/drive/folders/1DFezOAD0oD1BblsXVxqDsl8fj0qzB82i?usp=sharing) are extracted under `FoundationPose/foundationpose/weights`
+
+[demo_data](https://drive.google.com/drive/folders/1pRyFmxYXmAnpku7nGRioZaKrVJtIsroP?usp=sharing) are extracted under `FoundationPose/demo_data`
+
 After installation, you can try running the demo:
 
 ```bash
