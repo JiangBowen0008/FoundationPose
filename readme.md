@@ -9,6 +9,8 @@ Reference:
 ## Environment Setup with Conda (Improved Method)
 
 ```bash
+cd foundationpose
+
 # Create conda environment
 conda create --name foundationpose python=3.9
 
@@ -54,6 +56,13 @@ export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
 # Build extensions
 CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.9/site-packages/pybind11/share/cmake/pybind11 bash build_all_conda.sh
+```
+
+Afterwards, install the whole package to reuse it elsewhere
+```bash
+# Go back to the project root folder
+cd ..
+pip install -e .
 ```
 
 ## Troubleshooting
