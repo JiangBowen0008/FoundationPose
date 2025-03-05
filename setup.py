@@ -7,6 +7,6 @@ setup(
     author="Bowen Wen, Wei Yang, Jan Kautz, Stan Birchfield",
     url="https://github.com/NVlabs/FoundationPose",
     packages=find_packages(),
-    python_requires=">=3.9,<3.10",
+    python_requires=">=3.9",
     # install_requires=requirements,
 )

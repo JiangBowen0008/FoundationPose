@@ -6,13 +6,17 @@ Reference:
 1. https://github.com/NVlabs/FoundationPose/issues/85#issuecomment-2208255129
 2. https://github.com/NVlabs/FoundationPose/issues/254#issue-2639862132
 
-## Environment Setup with Conda (Improved Method)
+Additionally, this fork features:
+1. compatibility with python>=3.9 (verified with 3.10, should work for 3.11 as well)
+2. packaging the entire foundationpose codebase for reusing code elsewhere
+
+## Environment Setup with Conda (Verified)
 
 ```bash
 cd foundationpose
 
-# Create conda environment
-conda create --name foundationpose python=3.9
+# Create conda environment (the original environment uses python=3.9)
+conda create --name foundationpose python=3.10
 
 # Modify bundlesdf/mycuda/setup.py by adding your eigen path to include_dirs (This step has already been done in this forked repo)
 # Add your specific conda path to the include_dirs list:
@@ -34,7 +38,7 @@ conda install -y -c anaconda git
 conda install -y -c "nvidia/label/cuda-11.8.0" cuda-toolkit
 
 # Install Eigen3 3.4.0 under conda environment
-conda install conda-forge::eigen=3.4.0
+conda install -y conda-forge::eigen=3.4.0
 
 # Set the Eigen path (update with your actual path)
 export CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH:$CONDA_PREFIX/include/eigen3"
@@ -48,8 +52,10 @@ python -m pip install --quiet --no-cache-dir git+https://github.com/NVlabs/nvdif
 # Kaolin (Optional, needed if running model-free setup)
 python -m pip install --quiet --no-cache-dir kaolin==0.15.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.0.0_cu118.html
 
-# PyTorch3D
-python -m pip install --quiet --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt200/download.html
+# PyTorch3D (Installing from source since wheel for py310 is not yet available)
+pip install "git+https://github.com/facebookresearch/pytorch3d.git"
+# For py39, using the following shall be faster
+# python -m pip install --quiet --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu118_pyt200/download.html
 
 # Update library path
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
@@ -65,13 +71,14 @@ cd ..
 pip install -e .
 ```
 
-## Troubleshooting
+## Additional Notes
 
-If you encounter issues with missing `mycpp.so` after building, you can manually build it:
+If you encounter issues with missing `mycpp.so` after building (which always happens for me), you can manually build it:
 
 ```bash
-cd mycpp/build
-CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.9/site-packages/pybind11/share/cmake/pybind11 cmake ..
+cd foundationpose/mycpp/build
+conda install -y -c conda-forge curl
+CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.10/site-packages/pybind11/share/cmake/pybind11 cmake ..
 make -j$(nproc)
 # Rename the .so file built to mycpp.so if necessary
 ```
