@@ -8,7 +8,8 @@ Reference:
 
 Additionally, this fork features:
 1. compatibility with python>=3.9 (verified with 3.10, should work for 3.11 as well)
-2. packaging the entire foundationpose codebase for reusing code elsewhere
+2. Compatibility with higher version of torch (verified with 250+cu118)
+3. packaging the entire foundationpose codebase for reusing code elsewhere
 
 ## Environment Setup with Conda (Verified)
 
@@ -16,7 +17,7 @@ Additionally, this fork features:
 cd foundationpose
 
 # Create conda environment (the original environment uses python=3.9)
-conda create --name foundationpose python=3.10
+conda create --name foundationpose python=3.11
 
 # Modify bundlesdf/mycuda/setup.py by adding your eigen path to include_dirs (This step has already been done in this forked repo)
 # Add your specific conda path to the include_dirs list:
@@ -49,8 +50,8 @@ python -m pip install -r requirements.txt
 # Install NVDiffRast
 python -m pip install --quiet --no-cache-dir git+https://github.com/NVlabs/nvdiffrast.git
 
-# Kaolin (Optional, needed if running model-free setup)
-python -m pip install --quiet --no-cache-dir kaolin==0.15.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.0.0_cu118.html
+# Kaolin (Optional, needed if running model-free setup) (use kaolin==0.15.0 for torch200)
+python -m pip install --quiet --no-cache-dir kaolin==0.17.0 -f https://nvidia-kaolin.s3.us-east-2.amazonaws.com/torch-2.5.0_cu118.html
 
 # PyTorch3D (Installing from source since wheel for py310 is not yet available)
 pip install "git+https://github.com/facebookresearch/pytorch3d.git"
@@ -60,8 +61,8 @@ pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 # Update library path
 export LD_LIBRARY_PATH=$CONDA_PREFIX/lib:$LD_LIBRARY_PATH
 
-# Build extensions
-CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.9/site-packages/pybind11/share/cmake/pybind11 bash build_all_conda.sh
+# Build extensions (change python version if not using py311)
+CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.11/site-packages/pybind11/share/cmake/pybind11 bash build_all_conda.sh
 ```
 
 Afterwards, install the whole package to reuse it elsewhere
@@ -78,7 +79,8 @@ If you encounter issues with missing `mycpp.so` after building (which always hap
 ```bash
 cd foundationpose/mycpp/build
 conda install -y -c conda-forge curl
-CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.10/site-packages/pybind11/share/cmake/pybind11 cmake ..
+# change python version if not using py311
+CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.11/site-packages/pybind11/share/cmake/pybind11 cmake ..
 make -j$(nproc)
 # Rename the .so file built to mycpp.so if necessary
 ```
