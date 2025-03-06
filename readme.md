@@ -78,7 +78,7 @@ If you encounter issues with missing `mycpp.so` after building (which always hap
 
 ```bash
 cd foundationpose/mycpp/build
-conda install -y -c conda-forge curl
+conda install -y -c conda-forge curl boost-cpp cmake
 # change python version if not using py311
 CMAKE_PREFIX_PATH=$CONDA_PREFIX/lib/python3.11/site-packages/pybind11/share/cmake/pybind11 cmake ..
 make -j$(nproc)
